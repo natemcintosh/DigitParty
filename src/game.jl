@@ -31,8 +31,6 @@ function Base.print(io::IO, g::Game)
     print(io, "\nUp next: $(g.up_next[1]), then $(g.up_next[2])")
 end
 
-Base.print(g::Game) = Base.print(Base.stdout, g)
-
 """
     make_move!(g::Game, row::Int, col::Int; verbose::Bool = false)
 
@@ -127,4 +125,17 @@ function how_many_empties(g::Game, idx::CartesianIndex{2})::Int
         true for
         dir in DIRS if checkbounds(Bool, g.board, idx + dir) && (g.board[idx+dir] < 1)
     )
+end
+
+"""
+Of the most possible points you could have scored, if you had perfect knowledge of the 
+future, how many points did you score? In the range [0.0, 1.0].
+
+This function is intended to be called once the game is over.
+"""
+function get_pct_of_max(g::Game)
+    game_is_over(g) || error("Cannot calculate percent before game is over")
+
+    max_score = get_max_score(g)
+    get_score(g) / max_score
 end
