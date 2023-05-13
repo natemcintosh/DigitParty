@@ -1,5 +1,5 @@
 module DigitParty
 
-greet() = print("Hello World!")
+include("game.jl")
 
 end # module DigitParty
