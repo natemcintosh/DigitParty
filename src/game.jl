@@ -2,7 +2,7 @@
 using StaticArrays
 import Base: print, show
 
-export Game, make_move!, get_empty_spots, game_is_over
+export Game, make_move!, get_empty_spots, game_is_over, get_score
 
 mutable struct Game
     board   :: MMatrix{5,5,Int8}
@@ -12,7 +12,12 @@ end
 Game() = Game(MMatrix{5,5,Int8}(zeros(5, 5)), MVector{2,Int8}(rand(1:9, 2)))
 
 function Base.print(io::IO, g::Game)
-    for row in eachrow(g.board)
+    # First print a row showing column numbers
+    println("   1 2 3 4 5")
+    println("   - - - - -")
+
+    for (rnum, row) in enumerate(eachrow(g.board))
+        print(rnum, "| ")
         for elt in row
             if elt < 1
                 print(io, ". ")
@@ -41,7 +46,11 @@ make_move!(g::Game, row::Int, col::Int; verbose::Bool = false) =
 
 `idx` can be either LinearIndex or CartesianIndex
 """
-function make_move!(g::Game, idx::Union{CartesianIndex{2}, IndexLinear, Int}; verbose::Bool = false)
+function make_move!(
+    g::Game,
+    idx::Union{CartesianIndex{2},IndexLinear,Int};
+    verbose::Bool = false,
+)
     # Check validity of input
     # They cannot place a piece where one already exists
     @assert g.board[idx] < 1 "Number already at [$idx]"
@@ -73,4 +82,38 @@ Check if the game is over
 """
 function game_is_over(g::Game)::Bool
     all(>=(1), g.board)
+end
+
+const DIRS =
+    CartesianIndex.([(1, 1), (1, 0), (1, -1), (0, 1), (0, -1), (-1, 1), (-1, 0), (-1, -1)])
+
+"""
+    get_score(g::Game)
+
+For each neighbor, vertical, horizontal, or diagonal, add that number to the score
+"""
+function get_score(g::Game)
+    seen = Vector{CartesianIndex{2}}()
+    score = 0
+
+    for idx in eachindex(IndexCartesian(), g.board)
+        # For each neighborly direction
+        for dir in DIRS
+            # If outside array or already seen, skip
+            if !(checkbounds(Bool, g.board, idx + dir) && (idx + dir ∉ seen))
+                continue
+            end
+
+            # Add to score if matches
+            if g.board[idx + dir] == g.board[idx]
+                score += g.board[idx]
+            end
+        end
+
+
+        # Add it to `seen`
+        push!(seen, idx)
+    end
+
+    score
 end

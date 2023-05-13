@@ -1,3 +1,5 @@
+using StaticArrays
+
 @testset "Construct" begin
     g = Game()
     @test all(g.board .== 0)
@@ -49,4 +51,42 @@ end
     end
 
     @test game_is_over(g)
+end
+
+@testset "get_score" begin
+    board = @MMatrix [
+        3 6 6 6 5
+        3 9 9 3 5
+        9 9 9 9 8
+        2 4 9 7 2
+        1 4 7 7 2
+    ]
+    g = Game(board, @MVector [1, 2])
+    want = 164
+    got = get_score(g)
+    @test want == got
+
+    board = @MMatrix [
+        3 9 4 8 1
+        6 3 4 5 9
+        6 3 1 2 6
+        6 2 3 9 1
+        8 4 6 4 4
+    ]
+    g = Game(board, @MVector [1, 2])
+    want = 29
+    got = get_score(g)
+    @test want == got
+
+    board = @MMatrix [
+        5 2 2 2 2
+        5 5 9 2 4
+        7 2 9 9 4
+        7 8 8 4 1
+        4 8 8 1 1
+    ]
+    g = Game(board, @MVector [1, 2])
+    want = 120
+    got = get_score(g)
+    @test want == got
 end
