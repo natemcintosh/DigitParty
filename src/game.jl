@@ -96,6 +96,7 @@ function get_score(g::Game)
     seen = Vector{CartesianIndex{2}}()
     score = 0
 
+    # For each spot on the board
     for idx in eachindex(IndexCartesian(), g.board)
         # For each neighborly direction
         for dir in DIRS
