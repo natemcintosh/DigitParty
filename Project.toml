@@ -2,3 +2,6 @@ name = "DigitParty"
 uuid = "c13014e2-feab-4322-a7d1-9b9389494bb3"
 authors = ["Nathan McIntosh <natemcintosh@gmail.com>"]
 version = "0.1.0"
+
+[deps]
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
