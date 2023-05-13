@@ -1,0 +1,4 @@
+name = "DigitParty"
+uuid = "c13014e2-feab-4322-a7d1-9b9389494bb3"
+authors = ["Nathan McIntosh <natemcintosh@gmail.com>"]
+version = "0.1.0"
