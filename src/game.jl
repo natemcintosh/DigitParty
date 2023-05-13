@@ -2,7 +2,7 @@
 using StaticArrays
 import Base: print, show
 
-export Game, make_move!, get_empty_spots, game_is_over, get_score
+export Game, make_move!, get_empty_spots, game_is_over, get_score, how_many_empties
 
 mutable struct Game
     board   :: MMatrix{5,5,Int8}
@@ -10,6 +10,7 @@ mutable struct Game
 end
 
 Game() = Game(MMatrix{5,5,Int8}(zeros(5, 5)), MVector{2,Int8}(rand(1:9, 2)))
+Game(rng) = Game(MMatrix{5,5,Int8}(zeros(5, 5)), MVector{2,Int8}(rand(rng, 1:9, 2)))
 
 function Base.print(io::IO, g::Game)
     # First print a row showing column numbers
@@ -106,15 +107,24 @@ function get_score(g::Game)
             end
 
             # Add to score if matches
-            if g.board[idx + dir] == g.board[idx]
+            if g.board[idx+dir] == g.board[idx]
                 score += g.board[idx]
             end
         end
-
 
         # Add it to `seen`
         push!(seen, idx)
     end
 
     score
+end
+
+"""
+How many of the spots around `idx` are empty?
+"""
+function how_many_empties(g::Game, idx::CartesianIndex{2})::Int
+    count(
+        true for
+        dir in DIRS if checkbounds(Bool, g.board, idx + dir) && (g.board[idx+dir] < 1)
+    )
 end

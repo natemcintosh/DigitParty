@@ -90,3 +90,28 @@ end
     got = get_score(g)
     @test want == got
 end
+
+@testset "how_many_empties" begin
+    g = Game()
+    want = 3
+    got = how_many_empties(g, CartesianIndex(1, 1))
+    @test want == got
+
+    want = 8
+    got = how_many_empties(g, CartesianIndex(3, 3))
+    @test want == got
+
+    make_move!(g, 1, 1)
+    want = 4
+    got = how_many_empties(g, CartesianIndex(1, 2))
+    @test want == got
+
+    g = Game()
+    for idx in eachindex(g.board)
+        make_move!(g, idx)
+    end
+
+    for idx in eachindex(IndexCartesian(), g.board)
+        @test 0 == how_many_empties(g, idx)
+    end
+end
