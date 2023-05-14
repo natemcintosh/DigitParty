@@ -2,7 +2,14 @@
 using StaticArrays
 import Base: print, show
 
-export Game, make_move!, get_empty_spots, game_is_over, get_score, how_many_empties
+export Game,
+    make_move!,
+    get_empty_spots,
+    game_is_over,
+    get_score,
+    how_many_empties,
+    get_pct_of_max,
+    get_max_without_board
 
 mutable struct Game
     board   :: MMatrix{5,5,Int8}
@@ -118,6 +125,8 @@ function get_score(g::Game)
 end
 
 """
+    how_many_empties(g::Game, idx::CartesianIndex{2})
+
 How many of the spots around `idx` are empty?
 """
 function how_many_empties(g::Game, idx::CartesianIndex{2})::Int
@@ -128,7 +137,9 @@ function how_many_empties(g::Game, idx::CartesianIndex{2})::Int
 end
 
 """
-Of the most possible points you could have scored, if you had perfect knowledge of the 
+    get_pct_of_max(g::Game)
+
+Of the most possible points you could have scored, if you had perfect knowledge of the
 future, how many points did you score? In the range [0.0, 1.0].
 
 This function is intended to be called once the game is over.
@@ -136,6 +147,22 @@ This function is intended to be called once the game is over.
 function get_pct_of_max(g::Game)
     game_is_over(g) || error("Cannot calculate percent before game is over")
 
-    max_score = get_max_score(g)
+    max_score = get_max_without_board(g)
     get_score(g) / max_score
+end
+
+"""
+Calculates the max score, by simply assuming that each instance of a number could be
+connected to all other instances of that number
+"""
+function get_max_without_board(g::Game)
+    game_is_over(g) || error("Cannot get max score before game is over")
+    # Create an array that acts like a dictionary. The index is the number and the value
+    # is how many times that number appeared on the board
+    counts = @MVector zeros(Int, 9)
+    for val in g.board
+        counts[val] += 1
+    end
+
+    sum(val * binomial(cnt, 2) for (val, cnt) in enumerate(counts))
 end
