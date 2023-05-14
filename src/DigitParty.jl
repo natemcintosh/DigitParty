@@ -6,18 +6,19 @@ abstract type AbstractEngine end
 include("game.jl")
 include("naive1.jl")
 
-export AbstractEngine, play
+export AbstractEngine, play!
 
 """
-    play([rng=default_rng()], e::AbstractEngine)
+    play!(g::Game, e::AbstractEngine)
 
 Play a single game with a given engine. Optionally, specify a random number generator.
 This can be useful in cases where you want two or more engines to play the exact same
-game.
+game. The score is returned.
 
-The score is returned.
+Note that the `Game` object will be filled up. If you want multiple engines to play
+the same game, make copies of it with `deepcopy()`.
 """
-function play(g::Game, e::AbstractEngine)
+function play!(g::Game, e::AbstractEngine)
     while !game_is_over(g)
         next_spot = pick_next_spot(g, e)
         make_move!(g, next_spot)
