@@ -115,3 +115,41 @@ end
         @test 0 == how_many_empties(g, idx)
     end
 end
+
+@testset "get_max_score_as_calculated_on_site" begin
+    board = @MMatrix [
+        8 5 5 4 4
+        8 6 6 6 4
+        7 2 6 6 5
+        2 9 9 3 2
+        2 2 2 3 1
+    ]
+    g = Game(board, @MVector [1, 2])
+    want = round(Int, 95 / 0.81)
+    got = get_max_score_as_calculated_on_site(g)
+    @test want == got
+
+    board = @MMatrix [
+        1 2 1 2 8
+        8 8 3 1 4
+        6 3 7 9 7
+        3 8 8 2 4
+        6 8 6 5 7
+    ]
+    g = Game(board, @MVector [1, 2])
+    want = 149
+    got = get_max_score_as_calculated_on_site(g)
+    @test want == got
+
+    board = @MMatrix [
+        1 1 6 6 2
+        5 1 1 1 7
+        5 5 9 9 7
+        7 9 8 8 3
+        8 9 8 8 3
+    ]
+    g = Game(board, @MVector [1, 2])
+    want = 171
+    got = get_max_score_as_calculated_on_site(g)
+    @test want == got
+end
