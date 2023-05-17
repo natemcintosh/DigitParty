@@ -1,12 +1,31 @@
 module DigitParty
+
+import Base: print, show
+using Graphs
+using GridGraphs
+using JuMP
+using HiGHS
 using Random
+using StaticArrays
 
 abstract type AbstractEngine end
 
 include("game.jl")
 include("naive1.jl")
+include("optimal_solution.jl")
 
 export AbstractEngine, play!
+export Game,
+    make_move!,
+    get_empty_spots,
+    game_is_over,
+    get_score,
+    how_many_empties,
+    get_pct_of_max,
+    get_max_without_board,
+    get_max_score_as_calculated_on_site
+export Naive1, pick_next_spot
+export optimal_solution
 
 """
     play!(g::Game, e::AbstractEngine)
