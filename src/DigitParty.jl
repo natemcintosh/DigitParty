@@ -1,5 +1,4 @@
 module DigitParty
-using Random
 
 abstract type AbstractEngine end
 
@@ -19,7 +18,7 @@ Note that the `Game` object will be filled up. If you want multiple engines to p
 the same game, make copies of it with `deepcopy()`.
 """
 function play!(g::Game, e::AbstractEngine)
-    while !game_is_over(g)
+    for _ in 1:25
         next_spot = pick_next_spot(g, e)
         make_move!(g, next_spot)
     end
