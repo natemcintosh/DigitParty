@@ -1,18 +1,4 @@
 # This file has the interface for running a game
-using StaticArrays
-# using JuMP
-# using HiGHS
-import Base: print, show
-
-export Game,
-    make_move!,
-    get_empty_spots,
-    game_is_over,
-    get_score,
-    how_many_empties,
-    get_pct_of_max,
-    get_max_without_board,
-    get_max_score_as_calculated_on_site
 
 mutable struct Game
     board   :: MMatrix{5,5,Int8}
@@ -201,49 +187,3 @@ function get_max_score_as_calculated_on_site(g::Game)::Int
 
     sum(num * d[counts[num]] for num = 1:9)
 end
-
-# function optimizing_get_max_score(g::Game)::Int
-#     game_is_over(g) || error("Cannot get max score before game is over")
-
-#     # Create an array that acts like a dictionary. The index is the number and the value
-#     # is how many times that number appeared on the board
-#     counts = @MVector zeros(Int, 9)
-#     for val in g.board
-#         counts[val] += 1
-#     end
-
-#     model = Model(HiGHS.Optimizer)
-#     # Create a 7x7 matrix, where the outer rows and columns are all zeros. Makes getting
-#     # neighbors easier
-#     @variable(model, x[1:7, 1:7], Int)
-
-#     # All boundaries have to be 0
-#     @constraint(model, bz1, x[:, 1] .== 0)
-#     @constraint(model, bz2, x[:, end] .== 0)
-#     @constraint(model, bz3, x[1, :] .== 0)
-#     @constraint(model, bz4, x[end, :] .== 0)
-
-#     # Need the correct number of instances of each number
-#     @constraints(
-#         model,
-#         begin
-#             correct_numbers[i = eachindex(counts)], count(==(i), x[2:6, 2:6]) == counts[i]
-#         end
-#     )
-
-#     # Hoping to use 
-#     # when `x[idx+dir] >= 1`, we add `x[idx]`, otherwise add 0
-#     # DIRS = CartesianIndex.([(1, 1), (1, 0), (1, -1), (0, 1), (0, -1), (-1, 1), (-1, 0), (-1, -1)])
-#     @objective(
-#         model,
-#         Max,
-#         sum(
-#             x[idx] * (1 - min(x[idx+dir], 1)) for
-#             idx in eachindex(IndexCartesian(), x[2:6, 2:6]) for dir in DIRS
-#         )
-#     )
-
-#     optimize!(model)
-#     @show termination_status(model)
-#     @show x
-# end
