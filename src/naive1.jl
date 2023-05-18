@@ -1,6 +1,3 @@
-
-export Naive1, pick_next_spot
-
 mutable struct Naive1 <: AbstractEngine
     spot_ranks::Vector{CartesianIndex{2}}
 end
