@@ -1,6 +1,4 @@
 module DigitParty
-<<<<<<< HEAD
-=======
 
 import Base: print, show
 using Graphs
@@ -9,7 +7,6 @@ using JuMP
 using HiGHS
 using Random
 using StaticArrays
->>>>>>> main
 
 abstract type AbstractEngine end
 
